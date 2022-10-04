@@ -48,6 +48,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $ville = null;
 
+    #[ORM\Column(length: 10)]
+    private ?string $oldId = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateEmbauche = null;
 
@@ -197,6 +200,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVille(string $ville): self
     {
         $this->ville = $ville;
+
+        return $this;
+    }
+
+    public function getoldId(): ?string
+    {
+        return $this->oldId;
+    }
+
+    public function setoldId(string $oldId): self
+    {
+        $this->oldId = $oldId;
 
         return $this;
     }

@@ -38,7 +38,7 @@ class FicheFrais
     #[ORM\OneToMany(mappedBy: 'ficheFrais', targetEntity: LigneFraisHorsForfait::class)]
     private Collection $ligneFraisHorsForfait;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne( inversedBy: 'ficheFrais')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Etat $etat = null;
 
@@ -184,4 +184,5 @@ class FicheFrais
 
         return $this;
     }
+
 }
