@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Etat;
 use App\Entity\FicheFrais;
+use App\Entity\FraisForfait;
+use App\Entity\LigneFraisForfait;
+use App\Entity\LigneFraisHorsForfait;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DataImportController extends AbstractController
 {
-    #[Route('/importuser', name: 'app_import_users')]
+    #[Route('/importuser', name: 'app_import_users')] 
     public function index(ManagerRegistry $doctrine, UserPasswordHasherInterface $passwordHasher): Response
     {
         $usersjson = file_get_contents("visiteur.json");
@@ -79,11 +82,74 @@ class DataImportController extends AbstractController
             }
 
             $newFicheFrais->setEtat($etat);
-            var_dump($newFicheFrais->getMois());
-            var_dump($newFicheFrais->getUser()->getoldId());
+            $doctrine->getManager()->persist($newFicheFrais);
+            $doctrine->getManager()->flush();
+        }
+        return $this->render('data_import/index.html.twig', [
+            'controller_name' => 'DataImportController',
+        ]);
+    }
 
-            //$doctrine->getManager()->persist($newFicheFrais);
-            //$doctrine->getManager()->flush();
+    #[Route('/importlignesff', name: 'app_import_fiches')]
+    public function importLignesFraisForfait(ManagerRegistry $doctrine): Response
+    {
+        $lignes_frais_forfaitjson = file_get_contents("LigneFicheFrais.json");
+        $lignes_frais_forfait = json_decode($lignes_frais_forfaitjson);
+
+        foreach($lignes_frais_forfait as $lignefraisforfait)
+        {
+            $newLigneFraisForfait = new LigneFraisForfait();
+            $newLigneFraisForfait->setQuantite($lignefraisforfait->quantite);
+            $user = $doctrine->getRepository(User::class)->findOneBy(['oldId' => $lignefraisforfait->idVisiteur]);
+            $ficheFrais = $doctrine->getRepository(FicheFrais::class)->findOneBy(['user' => $user, 'mois'=>$lignefraisforfait->mois]);
+            $newLigneFraisForfait->setFicheFrais($ficheFrais);
+
+            switch ($lignefraisforfait->idFraisForfait){
+                case "ETP":
+                    $fraisForfait = $doctrine->getRepository(FraisForfait::class)->find(1);
+                    break;
+
+                case "KM":
+                    $fraisForfait  = $doctrine->getRepository(FraisForfait::class)->find(2);
+                    break;
+
+                case "NUI":
+                    $fraisForfait  = $doctrine->getRepository(FraisForfait::class)->find(3);
+                    break;
+
+                case "REP":
+                    $fraisForfait  = $doctrine->getRepository(FraisForfait::class)->find(4);
+                    break;
+
+            }
+
+            $newLigneFraisForfait->setFraisForfait($fraisForfait);
+            $doctrine->getManager()->persist($newLigneFraisForfait);
+            $doctrine->getManager()->flush();
+        }
+        return $this->render('data_import/index.html.twig', [
+            'controller_name' => 'DataImportController',
+        ]);
+    }
+
+    #[Route('/importlignesfhf', name: 'app_import_fiches')]
+    public function importLignesFraisHorsForfait(ManagerRegistry $doctrine): Response
+    {
+        $lignes_frais_hors_forfaitjson = file_get_contents("LigneFraisHorsForfait.json");
+        $lignes_frais_hors_forfait = json_decode($lignes_frais_hors_forfaitjson);
+
+        foreach($lignes_frais_hors_forfait as $lignefraishorsforfait)
+        {
+            $newLigneFraisHorsForfait = new LigneFraisHorsForfait();
+            $newLigneFraisHorsForfait->setLibelle($lignefraishorsforfait->libelle);
+            $newLigneFraisHorsForfait->setDate((new \DateTime($lignefraishorsforfait->date)));
+            $newLigneFraisHorsForfait->setMontant($lignefraishorsforfait->montant);
+            $user = $doctrine->getRepository(User::class)->findOneBy(['oldId' => $lignefraishorsforfait->idVisiteur]);
+            $fichefrais = $doctrine->getRepository(FicheFrais::class)->findOneBy(['user' => $user, 'mois'=>$lignefraishorsforfait->mois]);
+            $newLigneFraisHorsForfait->setFicheFrais($fichefrais);
+
+            $doctrine->getManager()->persist($newLigneFraisHorsForfait);
+            $doctrine->getManager()->flush();
         }
         return $this->render('data_import/index.html.twig', [
             'controller_name' => 'DataImportController',

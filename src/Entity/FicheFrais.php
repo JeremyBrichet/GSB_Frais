@@ -185,4 +185,18 @@ class FicheFrais
         return $this;
     }
 
+    public function getMontantLignesFrais()
+    {
+        $montantTotalLigneFF = 0;
+        foreach ($this->getLignefraisforfait() as $uneLigneFraisForfait) {
+            $montantTotalLigneFF = $montantTotalLigneFF + $uneLigneFraisForfait->getQuantite()*$uneLigneFraisForfait->getFraisForfait()->getMontant();
+        }
+
+        $montantTotalLigneFHF = 0;
+        foreach ($this->getLigneFraisHorsForfait() as $uneLigneFraisHorsForfait) {
+            $montantTotalLigneFHF = $montantTotalLigneFHF + $uneLigneFraisHorsForfait->getMontant();
+        }
+
+        return $montantTotalLigneFF + $montantTotalLigneFHF;
+        }
 }
