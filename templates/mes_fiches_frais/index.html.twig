@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Fiches Frais{% endblock %}
+
+{% block body %}
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Accueil</a>
+                <a class="navbar-brand" href="#">Mes Fiches Frais</a>
+            </div>
+        </div>
+    </nav>
+        {{ form(myForm) }}
+    <style>
+        table, th, td {
+            border:1px solid black;
+        }
+    </style>
+    <table style="width:100%">
+        <tr>
+            <td>ID </td>
+            <td>Nombre Justificatif </td>
+            <td>Montant </td>
+            <td>Date Modification </td>
+            <td>Mois </td>
+            <td>User </td>
+            <td>Ligne Frais Forfait </td>
+            <td>Ligne Frais Hors Forfait </td>
+            <td>Etat </td>
+        </tr>
+        <tr>
+            <td>{{ dump(selectFicheFrais.id) }}</td>
+            <td>{{ dump(selectFicheFrais.nbjustificatif) }}</td>
+            <td>{{ dump(selectFicheFrais.montant) }}</td>
+            <td>{{ dump(selectFicheFrais.dateModification) }}</td>
+            <td>{{ dump(selectFicheFrais.mois) }}</td>
+            <td>{{ dump(selectFicheFrais.user) }}</td>
+            <td>{{ dump(selectFicheFrais.lignefraisforfait) }}</td>
+            <td>{{ dump(selectFicheFrais.ligneFraisHorsForfait) }}</td>
+            <td>{{ dump(selectFicheFrais.etat) }}</td>
+        </tr>
+    </table>
+
+
+
+{% endblock %}
