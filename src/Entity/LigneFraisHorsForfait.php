@@ -20,6 +20,13 @@ class LigneFraisHorsForfait
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $montant = null;
 
+    public function __construct(?FicheFrais $ficheFrais, ?string $libelle, ?\DateTime $date, ?string $montant){
+        $this->ficheFrais = $ficheFrais;
+        $this->libelle = $libelle;
+        $this->date = $date;
+        $this->montant = $montant;
+    }
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 

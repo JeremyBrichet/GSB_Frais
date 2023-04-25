@@ -6,6 +6,9 @@ use App\Entity\Etat;
 use App\Entity\FicheFrais;
 use App\Entity\FraisForfait;
 use App\Entity\LigneFraisForfait;
+use App\Entity\LigneFraisHorsForfait;
+use App\Form\NewFicheFraisLignesFraisForfaitType;
+use App\Form\NewFicheFraisLignesFraisHorsForfaitType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,9 +68,35 @@ class SaisiFichesFraisMoisController extends AbstractController
             $entityManager->persist($ficheFrais);
             $entityManager->flush();
         }
+        $formLignesFraisforfait = $this->createForm(NewFicheFraisLignesFraisForfaitType::class, null, ['currentFicheFrais' => $ficheFrais]);
+        $formLignesFraisforfait->handleRequest($request);
+        if($formLignesFraisforfait->isSubmitted() && $formLignesFraisforfait->isValid()){
+            $ficheFrais->getLignefraisforfait()[0]->setQuantite($formLignesFraisforfait->get('Forfait Etape')->getData());
+            $ficheFrais->getLignefraisforfait()[1]->setQuantite($formLignesFraisforfait->get('Nuite')->getData());
+            $ficheFrais->getLignefraisforfait()[2]->setQuantite($formLignesFraisforfait->get('Forfait Kilometrique')->getData());
+            $ficheFrais->getLignefraisforfait()[3]->setQuantite($formLignesFraisforfait->get('Repas')->getData());
+
+            $doctrine->getManager()->persist($ficheFrais);
+            $doctrine->getManager()->flush();
+        }
+
+        $newLignefraisHorsForfait = new LigneFraisHorsForfait($ficheFrais, null, null, null);
+        $formLignesFraisHorsforfait = $this->createForm(NewFicheFraisLignesFraisHorsForfaitType::class, $newLignefraisHorsForfait);
+        $formLignesFraisHorsforfait->handleRequest($request);
+        if ($formLignesFraisHorsforfait->isSubmitted() && $formLignesFraisHorsforfait->isValid()){
+            $newLignefraisHorsForfait->setFicheFrais($ficheFrais);
+            $ficheFrais->addLigneFraisHorsForfait($newLignefraisHorsForfait);
+            $doctrine->getManager()->persist($newLignefraisHorsForfait);
+            $doctrine->getManager()->persist($ficheFrais);
+            $doctrine->getManager()->flush();
+        }
+
 
         return $this->render('saisi_fiches_frais_mois/index.html.twig', [
             'controller_name' => 'SaisiFichesFraisMoisController',
+            'ficheFrais' => $ficheFrais,
+            'formLFF' => $formLignesFraisforfait->createView(),
+            'formLFHF' => $formLignesFraisHorsforfait->createView(),
         ]);
     }
 }
