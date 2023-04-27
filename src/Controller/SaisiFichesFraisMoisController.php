@@ -7,6 +7,7 @@ use App\Entity\FicheFrais;
 use App\Entity\FraisForfait;
 use App\Entity\LigneFraisForfait;
 use App\Entity\LigneFraisHorsForfait;
+use App\Entity\User;
 use App\Form\NewFicheFraisLignesFraisForfaitType;
 use App\Form\NewFicheFraisLignesFraisHorsForfaitType;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,21 +22,21 @@ class SaisiFichesFraisMoisController extends AbstractController
     public function index(ManagerRegistry $doctrine, Request $request ): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $users = $this->getUser();
+        $user = $doctrine->getManager()->getRepository(User::class)->find($this->getUser());
         $date = new \DateTime();
         $mois = $date->format('Ym');
         $repository = $doctrine->getRepository(FicheFrais::class);
-        $ficheFrais = $repository->findOneBy(array('user' => $users, 'mois' => $mois));
+        $ficheFrais = $repository->findOneBy(array('user' => $user, 'mois' => $mois));
 
         if($ficheFrais == null){
             $entityManager = $doctrine->getManager();
             $ficheFrais = new FicheFrais();
-            $ficheFrais -> setUser($users);
+            $ficheFrais -> setUser($user);
             $ficheFrais -> setMois($mois);
-            $ficheFrais -> setNbJustificatifs(0);
-            $ficheFrais -> setMontantValide(0);
-            $ficheFrais -> setDateModif(new \DateTime());
-            $ficheFrais -> setEtat($doctrine->getManager()->getRepository(FraisForfait::class));
+            $ficheFrais -> setNbjustificatif(0);
+            $ficheFrais -> setMontant(0);
+            $ficheFrais -> setDateModification(new \DateTime());
+            $ficheFrais -> setEtat($doctrine->getManager()->getRepository(Etat::class)->find(2));
 
             $lffNuite = new LigneFraisForfait();
             $lffNuite ->setQuantite(0);
@@ -71,9 +72,9 @@ class SaisiFichesFraisMoisController extends AbstractController
         $formLignesFraisforfait = $this->createForm(NewFicheFraisLignesFraisForfaitType::class, null, ['currentFicheFrais' => $ficheFrais]);
         $formLignesFraisforfait->handleRequest($request);
         if($formLignesFraisforfait->isSubmitted() && $formLignesFraisforfait->isValid()){
-            $ficheFrais->getLignefraisforfait()[0]->setQuantite($formLignesFraisforfait->get('Forfait Etape')->getData());
+            $ficheFrais->getLignefraisforfait()[0]->setQuantite($formLignesFraisforfait->get('ForfaitEtape')->getData());
             $ficheFrais->getLignefraisforfait()[1]->setQuantite($formLignesFraisforfait->get('Nuite')->getData());
-            $ficheFrais->getLignefraisforfait()[2]->setQuantite($formLignesFraisforfait->get('Forfait Kilometrique')->getData());
+            $ficheFrais->getLignefraisforfait()[2]->setQuantite($formLignesFraisforfait->get('ForfaitKilometrique')->getData());
             $ficheFrais->getLignefraisforfait()[3]->setQuantite($formLignesFraisforfait->get('Repas')->getData());
 
             $doctrine->getManager()->persist($ficheFrais);

@@ -18,6 +18,7 @@
             border:1px solid black;
         }
     </style>
+    {% if selectFicheFrais != null %}
     <table style="width:100%">
         <tr>
             <td>ID </td>
@@ -26,23 +27,34 @@
             <td>Date Modification </td>
             <td>Mois </td>
             <td>User </td>
-            <td>Ligne Frais Forfait </td>
-            <td>Ligne Frais Hors Forfait </td>
             <td>Etat </td>
         </tr>
         <tr>
-            <td>{{ dump(selectFicheFrais.id) }}</td>
-            <td>{{ dump(selectFicheFrais.nbjustificatif) }}</td>
-            <td>{{ dump(selectFicheFrais.montant) }}</td>
-            <td>{{ dump(selectFicheFrais.dateModification) }}</td>
-            <td>{{ dump(selectFicheFrais.mois) }}</td>
-            <td>{{ dump(selectFicheFrais.user) }}</td>
-            <td>{{ dump(selectFicheFrais.lignefraisforfait) }}</td>
-            <td>{{ dump(selectFicheFrais.ligneFraisHorsForfait) }}</td>
-            <td>{{ dump(selectFicheFrais.etat) }}</td>
+            <td>{{ selectFicheFrais.id }}</td>
+            <td>{{ selectFicheFrais.nbjustificatif }}</td>
+            <td>{{ selectFicheFrais.montant }}</td>
+            <td>{{ selectFicheFrais.dateModification | date('d/m/Y')}}</td>
+            <td>{{ selectFicheFrais.mois }}</td>
+            <td>{{ selectFicheFrais.user.nom }}</td>
+            <td>{{ selectFicheFrais.etat.libelle }}</td>
         </tr>
     </table>
-
-
-
+    <table>
+        {% for lff in selectFicheFrais.lignefraisforfait %}
+        <tr>
+            <td>{{ lff.fraisForfait.libelle }}</td>
+            <td>{{ lff.quantite }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <table>
+        {% for lfhf in selectFicheFrais.ligneFraisHorsForfait %}
+            <tr>
+                <td>{{ lfhf.date | date('d/m/Y') }}</td>
+                <td>{{ lfhf.libelle }}</td>
+                <td>{{ lfhf.montant }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
 {% endblock %}

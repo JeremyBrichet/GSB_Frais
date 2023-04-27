@@ -15,16 +15,7 @@ class LigneFraisForfait
 
     #[ORM\Column]
     private ?int $quantite = null;
-    /**
-    *@param FicheFrais|null $fichefrais
-     *@param FicheFrais|null $fichefrais
-     * @param int|null $quantite
-    */
-    public function __construct(?FicheFrais $ficheFrais, ?FraisForfait $fraisForfait, ?int $quantite){
-        $this->ficheFrais = $ficheFrais;
-        $this->fraisForfait = $fraisForfait;
-        $this->quantite = $quantite;
-    }
+
     #[ORM\ManyToOne(inversedBy: 'lignefraisforfait')]
     #[ORM\JoinColumn(nullable: false)]
     private ?FicheFrais $ficheFrais = null;

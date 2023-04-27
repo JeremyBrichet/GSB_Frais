@@ -36,7 +36,7 @@ class MesFichesFraisController extends AbstractController
         }
         return $this->render('mes_fiches_frais/index.html.twig', [
             'controller_name' => 'MesFichesFraisController',
-            'myForm' => $formff,
+            'myForm' => $formff->createView(),
             'selectFicheFrais' => $selectedficheFrais,
         ]);
     }

@@ -30,7 +30,7 @@ class NewFicheFraisLignesFraisForfaitType extends AbstractType
         } else { $qteRepas = 0; }
 
         $builder
-            ->add('Forfait Etape', NumberType::class,[
+            ->add('ForfaitEtape', NumberType::class,[
             'label' => 'Forfait Etape',
             'data' => $qteForfaitEtape,
                 'attr' => [
@@ -50,7 +50,7 @@ class NewFicheFraisLignesFraisForfaitType extends AbstractType
                     'class' => 'form-floating',
                 ],
             ])
-            ->add('Forfait Kilometrique', NumberType::class,[
+            ->add('ForfaitKilometrique', NumberType::class,[
                 'label' => 'Forfait Kilometrique',
                 'data' => $qteForfaitKilometrique,
                 'attr' => [

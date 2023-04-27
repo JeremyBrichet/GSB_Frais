@@ -3,8 +3,13 @@
 namespace App\Form;
 
 use App\Entity\LigneFraisHorsForfait;
+use SebastianBergmann\CodeCoverage\Report\Text;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,21 +23,15 @@ class NewFicheFraisLignesFraisHorsForfaitType extends AbstractType
                 'label' => 'Date',
             ])
 
-            ->add('libelle', DateType::class, [
+            ->add('libelle', TextType::class, [
                 'label' => 'libelle',
             ])
 
-            ->add('montant', DateType::class, [
-                'widget' => 'Montant',
-                'currency' => 'EUR',
+            ->add('montant', NumberType::class, [
+                'label' => 'Montant',
             ])
 
-            ->add('date', DateType::class, [
-                'widget' => 'single_text',
-                'label' => 'Date',
-            ])
-
-            ->add('Valider', DateType::class, [
+            ->add('Valider', SubmitType::class, [
                 'label' => 'Ajouter',
                 'attr' => ['class' => 'btn btn-warning'],
             ])

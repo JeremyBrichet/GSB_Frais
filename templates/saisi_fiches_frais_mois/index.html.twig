@@ -19,14 +19,14 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="">
                     <path d="M7 1.414V4H2a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h5v6h2v-6h3.532a1 1 0 0 0 .768-.36l"></path>
                 </svg>
-                {{ form_row(formLFF.Forfait Etape, { 'attr': { 'class': 'text-center'}}) }}
+                {{ form_row(formLFF.ForfaitEtape, { 'attr': { 'class': 'text-center'}}) }}
             </div>
             <div class="col-lg-3 col-12">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="">
                     <path d="M4 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM6 8a1 1 0"></path>
                     <path d="M2.52 3.51A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c."></path>
                 </svg>
-                {{ form_row(formLFF.Forfait Kilometrique, { 'attr': { 'class': 'text-center'}}) }}
+                {{ form_row(formLFF.ForfaitKilometrique, { 'attr': { 'class': 'text-center'}}) }}
             </div>
             <div class="col-lg-3 col-12">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="">
@@ -70,17 +70,59 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for ligneFraisHF in currentFicheFrais.ligneFraisHorsForfait %}
+                    {% for ligneFraisHF in ficheFrais.ligneFraisHorsForfait %}
                     <tr>
                         <td>{{ ligneFraisHF.date | date('d/m/Y') }}</td>
                         <td>{{ ligneFraisHF.libelle }}</td>
                         <td>{{ ligneFraisHF.montant }}</td>
+                        <td><form method="post" action="{{ path('app_ligne_frais_hors_forfait_delete', {'id': ligneFraisHF.id}) }}" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer le frais hors forfait?');" >
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ligneFraisHF.id) }}">
+                        <button class="btn"><i class="bi bi-trash"></i></button></form></td>
                     </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
+    {{ form_start((formLFHF)) }}
+    <div class="row m-1 p-1 border-warning rounded text-center d-none" id="formAddLFHF">
+        <div class="row">
+            <h4>Ajouter un frais hors forfait</h4>
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-12">
+                <div class="row">
+                    {{ form_label(formLFHF.date) }}
+                </div>
+                <div class="row">
+                    {{ form_widget(formLFHF.date) }}
+                    {{ form_errors(formLFHF.date) }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-12">
+                <div class="row">
+                    {{ form_label(formLFHF.libelle) }}
+                </div>
+                <div class="row">
+                    {{ form_widget(formLFHF.libelle) }}
+                    {{ form_errors(formLFHF.libelle) }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-12">
+                <div class="row">
+                    {{ form_label(formLFHF.montant) }}
+                </div>
+                <div class="row">
+                    {{ form_widget(formLFHF.montant) }}
+                    {{ form_errors(formLFHF.montant) }}
+                </div>
+            </div>
+        </div>
+        <div class="row m-3 text-center">
+            {{ form_row(formLFHF.Valider) }}
+        </div>
+    </div>
+    {{ form_rest(formLFHF) }}
+    {{ form_end(formLFF) }}
 </div>
-
-
 {% endblock %}
